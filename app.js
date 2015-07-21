@@ -13,6 +13,7 @@ var users = require('./routes/users');
 
 var app = express();
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -25,11 +26,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.get('/books', function(req, res, next) {
     unirest.get('http://api.nytimes.com/svc/books/v3/lists/hardcover-fiction.json?api-key=' + process.env.NYT_API_KEY)
       .end(function (response) {
-        console.log(response.body);
-        next()
+        var NYTBooks = response.body.results.books;
+        res.render('index', {books: NYTBooks});
+        console.log(NYTBooks);
       })
 })
 
